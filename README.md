@@ -138,7 +138,7 @@ nano .env
 ```
 The best way to get the RTSP stream is to use the unifi protect web interface.
 
-### Run Natively
+## Run Natively
 
 Setup a python environment.
 ```
@@ -183,20 +183,31 @@ docker run -d \
 
 View the application locally at http://127.0.0.1:8000 or whatever IP is on your docker host.
 
-### Scripted Build and Deploy 🚀
+## Scripted Build and Deploy 🚀
 
 Clone the repository.
 ```
 git clone https://github.com/RamboRogers/greeter.git
 cd greeter
 ```
+Copy the .env.example file from this repository.
+
+```
+cp .env.example .env
+nano .env
+```
+
+Edit the .env file with your configuration.
+> You really only need to change the RTSP stream.
+
+![UDM Pro](support/image-7.png)
 
 Execute the build script.
 ```
 bash build_docker.sh
 ```
 
-### Build and Run ☭
+## Build and Run ☭
 
 Build the docker image.
 ```
