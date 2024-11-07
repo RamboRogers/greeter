@@ -6,22 +6,30 @@ Is the person at the door a friend or a foe? Are they angry or happy? Do I know 
 
 I wanted to create a special experience for my family and guests every time they walk through the door. So, I did what any reasonable dad would do: I built a multi-model AI pipeline 🎉 that tracks everyone’s mood when they get home and lights up an LED sign to greet them. 🤖💡 Now, each arrival feels warm, personalized, and totally unique. Welcome home, where AI meets heart! 🏡💖
 
-![alt text](support/image-1.png)
-
 ### Targeted Greetings
 
 This nerdy guy is clearly a hacker. I really like the GUI for this and the person highlighting and tagging with identification and emotion analysis took some work.
 
 ![targeted](support/targeted01.jpg)
 
+I'm using this led endpoint ( I made it) as a webhook endpoint to trigger a greeting. [led-project](https://github.com/RamboRogers/led8x32)
+
+![output](support/output.gif)
+
+
+### Dashboard
+
+That works to view camera feed, activity log, and person management.
+
+![alt text](support/image-1.png)
+
+
+
 ### Emotional Analysis
 
 Fear, or maybe just a smile?
 
 ![targeted](support/targeted.jpg)
-
-I'm using this led endpoint ( I made it) as a webhook endpoint to trigger a greeting. [led-project](https://github.com/RamboRogers/led8x32)
-![output](support/output.gif)
 
 
 
