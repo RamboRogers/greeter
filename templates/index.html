@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Greeter Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👋</text></svg>">
+</head>
+<body>
+    <div class="branding">
+        <div class="logo-container">
+            <h1 class="logo" onclick="window.open('https://github.com/RamboRogers/greeter', '_blank')" style="cursor: pointer;">
+                <span class="logo-icon">👋</span>
+                Greeter
+                <span class="logo-glow"></span>
+            </h1>
+            <p class="tagline">
+                <span>A</span>
+                <span>I</span>
+                <span>-</span>
+                <span>P</span>
+                <span>o</span>
+                <span>w</span>
+                <span>e</span>
+                <span>r</span>
+                <span>e</span>
+                <span>d</span>
+                <span>&nbsp;</span>
+                <span>F</span>
+                <span>a</span>
+                <span>c</span>
+                <span>e</span>
+                <span>&nbsp;</span>
+                <span>R</span>
+                <span>e</span>
+                <span>c</span>
+                <span>o</span>
+                <span>g</span>
+                <span>n</span>
+                <span>i</span>
+                <span>t</span>
+                <span>i</span>
+                <span>o</span>
+                <span>n</span>
+            </p>
+        </div>
+        <div class="social-links">
+            <span class="by-text">by <a href="https://matthewrogers.org" target="_blank">Matthew Rogers</a></span>
+            <span class="separator">•</span>
+            <span class="github">
+                <a href="https://github.com/RamboRogers" target="_blank">
+                    <i class="github-icon">⌘</i>RamboRogers
+                </a>
+            </span>
+            <span class="separator">•</span>
+            <span class="x">
+                <a href="https://x.com/rogerscissp" target="_blank">
+                    <i class="x-icon">𝕏</i>@rogerscissp
+                </a>
+            </span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="camera-feed">
+            <div class="camera-header">
+                <h2>📸 Live Camera Feed with 🤖 AI Detections & 🔍 Enrichment</h2>
+                <div class="camera-status">
+                    Status: <span id="camera-status">Connecting...</span>
+                </div>
+            </div>
+            <img id="camera-feed" src="" alt="Camera Feed">
+        </div>
+        <div class="controls">
+            <div class="controls-header">
+                <h3>Controls</h3>
+                <div class="controls-buttons">
+                    <button onclick="showUnknowns()">❓ Show Unknowns</button>
+                    <button onclick="showKnowns()">👥 Show Knowns</button>
+                    <button onclick="showActions()">🔍 Actions</button>
+                    <button onclick="showDatabase()">💾 View Database</button>
+                </div>
+            </div>
+        </div>
+        <div class="logs">
+            <h2>🪵 Logs</h2>
+            <div id="logs-container"></div>
+        </div>
+    </div>
+
+    <footer class="copyright">
+        © 2024 Matthew Rogers. All Rights Reserved.
+    </footer>
+
+    <!-- Add new modal/dialog for unknown faces -->
+    <div id="unknowns-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Unknown Faces</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="upload-controls">
+                    <button onclick="document.getElementById('face-upload').click()" class="upload-btn">
+                        Add a Face
+                    </button>
+                    <small style="color: #999; display: inline-block; margin-left: 10px;">Note: This should be a jpg with a single face, the face will be extracted by DeepFace and then you can assign to a person.</small>
+                    <input type="file"
+                           id="face-upload"
+                           accept="image/*"
+                           style="display: none"
+                           onchange="uploadFace(this.files[0])">
+                </div>
+                <div class="unknown-faces-grid">
+                    <!-- Images will be populated here -->
+                </div>
+                <div class="unknown-faces-controls">
+                    <input type="text" id="new-name" placeholder="Enter name (e.g. John.Smith)">
+                    <button onclick="saveSelectedFaces()">Save Selected</button>
+                    <button onclick="deleteAllUnknowns()" class="delete-btn">Delete All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add new modal for known faces -->
+    <div id="knowns-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Known People</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="known-faces-grid">
+                    <!-- Known faces will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add new modal for actions configuration -->
+    <div id="actions-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Action Configuration</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="action-tabs">
+                    <button class="action-tab-btn" data-tab="unknown">❓ Unknown Person</button>
+                    <button class="action-tab-btn" data-tab="known">👥 Known Person</button>
+                    <button class="action-tab-btn" data-tab="other">🔍 Other Detections</button>
+                </div>
+
+                <div class="webhook-config">
+                    <div class="form-group">
+                        <label>Webhook URL</label>
+                        <div class="url-input-group">
+                            <select class="method-select">
+                                <option value="POST">POST</option>
+                                <option value="GET">GET</option>
+                                <option value="PUT">PUT</option>
+                            </select>
+                            <input type="text" class="webhook-url" placeholder="https://your-webhook-url/unknown">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Headers</label>
+                        <textarea class="code-input headers-input" placeholder="Enter headers in JSON format"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Body Template</label>
+                        <textarea class="code-input body-input" placeholder="Enter body template in JSON format"></textarea>
+                    </div>
+                </div>
+
+                <div class="variables-reference">
+                    <h4>Available Variables</h4>
+                    <div class="variables-grid">
+                        <div class="variable-item">
+                            <code>${timestamp}</code>
+                            <span>Detection timestamp</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>${image}</code>
+                            <span>Base64 encoded image</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>${person}</code>
+                            <span>Person name (known only)</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>${confidence}</code>
+                            <span>Detection confidence</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>${sentiment}</code>
+                            <span>Detected sentiment</span>
+                        </div>
+                        <div class="variable-item">
+                            <code>${category}</code>
+                            <span>Detection category</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button onclick="saveActionConfig()" class="save-btn">Save Configuration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add new database modal -->
+    <div id="database-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Database Contents</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="database-view">
+                    <table id="database-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Image</th>
+                                <th>Person</th>
+                                <th>Category</th>
+                                <th>Sentiment</th>
+                                <th>Confidence</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be populated via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add modal for full-size image -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="full-size-image" src="" alt="Full size image">
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+</body>
+</html>

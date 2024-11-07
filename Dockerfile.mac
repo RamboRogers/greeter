@@ -1,0 +1,40 @@
+# Use Python 3.11.10 on Debian
+FROM python:3.11.10-slim
+
+# Set working directory
+WORKDIR /app
+
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV CUDA_VISIBLE_DEVICES=0
+# Force TensorFlow to see the GPU
+ENV TF_FORCE_GPU_ALLOW_GROWTH=true
+ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda
+
+# Set timezone
+ENV TZ=America/New_York
+RUN apt-get update && apt-get install -y \
+    tzdata \
+    build-essential \
+    libffi-dev \
+    libopenblas-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libwebp-dev \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application
+COPY . .
+
+# Command to run the application
+CMD ["python", "app.py"]

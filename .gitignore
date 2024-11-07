@@ -1,0 +1,11 @@
+.venv
+ram/*
+__pycache__
+yolov8n.pt
+unknown_faces/*
+known_faces/*
+debug
+currentface.jpg
+.DS_Store
+greeter.db
+.env

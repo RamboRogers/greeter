@@ -1,0 +1,27 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - master  # Adjust as needed
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: DockerHub  # Specify the environment
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t mattrogers/greeter:latest .
+
+      - name: Push Docker image
+        run: docker push mattrogers/greeter:latest

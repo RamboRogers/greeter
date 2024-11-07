@@ -1,0 +1,4 @@
+
+2024-11-06
+- Issues with sunlight and darkness breaking matches
+- Very low quality faces are also being saved (maybe we can junk these?)
