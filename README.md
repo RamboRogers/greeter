@@ -8,6 +8,18 @@ I wanted to create a special experience for my family and guests every time they
 
 ![alt text](support/image-1.png)
 
+### Targeted Greetings
+
+This nerdy guy is clearly a hacker. I really like the GUI for this and the person highlighting and tagging with identification and emotion analysis took some work.
+
+![targeted](support/targeted01.jpg)
+
+### Emotional Analysis
+
+Fear, or maybe just a smile?
+
+![targeted](support/targeted.jpg)
+
 
 
 # Greeter System Architecture
